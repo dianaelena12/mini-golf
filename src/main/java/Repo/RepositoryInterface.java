@@ -1,7 +1,7 @@
 package Repo;
 
 import Domain.BaseEntity;
-import sun.security.validator.ValidatorException;
+import Domain.Validators.ValidatorException;
 
 import java.util.Optional;
 

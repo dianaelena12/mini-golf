@@ -15,7 +15,7 @@ public class StudentService {
         this.repo = repo;
     }
 
-    public void addStudent(Student student) throws ValidatorException, sun.security.validator.ValidatorException {
+    public void addStudent(Student student) throws ValidatorException{
         repo.save(student);
     }
 
