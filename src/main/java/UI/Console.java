@@ -63,8 +63,8 @@ public class Console {
             student.setId(id);
 
             return student;
-        }catch (Exception ex){
-            ex.printStackTrace();
+        }catch (java.util.InputMismatchException ex){
+            System.out.println("\n");
         }
         return null;
     }
