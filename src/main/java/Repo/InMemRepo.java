@@ -48,7 +48,7 @@ public class InMemRepo<ID, T extends BaseEntity<ID>> implements RepositoryInterf
         if (id == null) {
             throw new IllegalArgumentException("ID must not be null!");
         }
-        if(findOne(id) == Optional.empty()){
+        if(findOne(id) == null){
             throw new IllegalArgumentException("Student does not exist in the database!");
         }
         return Optional.ofNullable(entities.remove(id));
@@ -59,7 +59,7 @@ public class InMemRepo<ID, T extends BaseEntity<ID>> implements RepositoryInterf
         if (entity == null) {
             throw new IllegalArgumentException("ID must not be null!");
         }
-        if(findOne(entity.getId()) == Optional.empty()){
+        if(findOne(entity.getId()) == null){
             throw new IllegalArgumentException("Student does not exist in the database!");
         }
         return Optional.ofNullable(entities.computeIfPresent(entity.getId(), (k, v) -> entity));
