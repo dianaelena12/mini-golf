@@ -23,4 +23,12 @@ public class StudentService {
         Iterable<Student> students = repo.findAll();
         return StreamSupport.stream(students.spliterator(), false).collect(Collectors.toSet());
     }
+
+    public void removeStudent(Long id){
+        repo.delete(id);
+    }
+
+    public void updateStudent(Student student){
+        repo.update(student);
+    }
 }

@@ -28,7 +28,7 @@ public interface RepositoryInterface<ID, T extends BaseEntity<ID>> {
     Iterable<T> findAll();
 
 
-    Optional<T> save(T entitiy) throws ValidatorException;
+    Optional<T> save(T entity) throws ValidatorException;
     /**
      * Saves the given entity.
      *
@@ -40,5 +40,10 @@ public interface RepositoryInterface<ID, T extends BaseEntity<ID>> {
      * @throws ValidatorException
      *             if the entity is not valid.
      */
+
+    Optional<T> delete(ID id);
+
+
+    Optional<T> update(T entity) throws ValidatorException;
 }
 
