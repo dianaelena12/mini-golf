@@ -25,7 +25,7 @@ public class StudentService {
     }
 
     public void removeStudent(Long id){
-        repo.delete(id);
+            repo.delete(id);
     }
 
     public void updateStudent(Student student){
