@@ -1,5 +1,6 @@
 package UI;
 
+import Domain.Assignment;
 import Domain.Problem;
 import Domain.Student;
 import Domain.Validators.DuplicateException;
@@ -21,53 +22,70 @@ public class Console {
     public void menuText(){
         System.out.println("0.Exit\n1.Add student\n2.Remove student\n" +
                 "3.Update student\n4.Print all students\n5.Add problem" +
-                "\n6.Remove problem\n7.Update problem\n8.Print all problems");
+                "\n6.Remove problem\n7.Update problem\n8.Print all problems" +
+                "\n9.Assign problem to student\n10.Assign grade\n11.Print all assignments");
     }
 
     public void runConsole(){
         while(true){
             menuText();
             System.out.println("Choose:");
-            Scanner in = new Scanner(System.in);
-            int option = in.nextInt();
-            if(option < 0 || option > 8)
-                System.out.println("Invalid number!");
-            switch (option){
-                case 1:{
-                    addStudent();
+            try{
+                Scanner in = new Scanner(System.in);
+                int option = in.nextInt();
+                if(option < 0 || option > 11)
+                    System.out.println("Invalid number!");
+                switch (option){
+                    case 1:{
+                        addStudent();
+                        break;
+                    }
+                    case 2:{
+                        removeStudent();
+                        break;
+                    }
+                    case 3: {
+                        updateStudent();
+                        break;
+                    }
+                    case 4: {
+                        printAllStudents();
+                        break;
+                    }
+                    case 5:{
+                        addProblem();
+                        break;
+                    }
+                    case 6:{
+                        removeProblem();
+                        break;
+                    }
+                    case 7:{
+                        updateProblem();
+                        break;
+                    }
+                    case 8:{
+                        printAllProblems();
+                        break;
+                    }
+                    case 9:{
+                        addAssignment();
+                        break;
+                    }
+                    case 10:{
+                        assignGrade();
+                        break;
+                    }
+                    case 11:{
+                        printAllAssignments();
+                        break;
+                    }
+                }
+                if(option == 0){
                     break;
                 }
-                case 2:{
-                    removeStudent();
-                    break;
-                }
-                case 3: {
-                    updateStudent();
-                    break;
-                }
-                case 4: {
-                    printAllStudents();
-                    break;
-                }
-                case 5:{
-                    addProblem();
-                    break;
-                }
-                case 6:{
-                    removeProblem();
-                    break;
-                }
-                case 7:{
-                    updateProblem();
-                    break;
-                }
-                case 8:{
-                    printAllProblems();
-                    break;
-                }
-            }
-            if(option == 0){
-                break;
+            } catch (InputMismatchException ex){
+                System.out.println("Invalid option!");
             }
         }
     }
@@ -90,6 +108,14 @@ public class Console {
         problems.stream().forEach(System.out::println);
     }
 
+    private void printAllAssignments(){
+        Set<Assignment> assignments = service.getAllAssignments();
+        if(assignments.isEmpty()){
+            System.out.println("There are no assignments!");
+            return;
+        }
+        assignments.stream().forEach(System.out::println);
+    }
 
     private void addStudent(){
         Student student = readStudent();
@@ -110,6 +136,20 @@ public class Console {
         try{
             service.addProblem(problem);
             System.out.println("Problem added successfully!");
+        }catch (ValidatorException ex){
+            ex.printStackTrace();
+        } catch (DuplicateException ex){
+            System.out.println(ex.getMessage());
+        } catch (IllegalArgumentException ex){
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    private void addAssignment(){
+        Assignment assignment = readAssignment();
+        try{
+            service.addAssignment(assignment);
+            System.out.println("Assignment added successfully!");
         }catch (ValidatorException ex){
             ex.printStackTrace();
         } catch (DuplicateException ex){
@@ -181,6 +221,34 @@ public class Console {
         }
     }
 
+    private void assignGrade(){
+        Scanner in = new Scanner(System.in);
+
+        try{
+            System.out.println("Student ID: ");
+            Long studentID = in.nextLong();
+            in.nextLine();
+
+            System.out.println("Problem ID: ");
+            Long problemID = in.nextLong();
+            in.nextLine();
+
+            System.out.println("Grade: ");
+            int grade = in.nextInt();
+
+            service.assignGrade(studentID, problemID, grade);
+            System.out.println("Grade assigned!");
+        }catch (ValidatorException ex){
+            ex.printStackTrace();
+        } catch (NoEntityStored ex){
+            System.out.println(ex.getMessage());
+        }catch (IllegalArgumentException ex){
+            System.out.println(ex.getMessage());
+        }catch (InputMismatchException ex){
+            System.out.println("Invalid data!");
+        }
+    }
+
     private Student readStudent(){
         System.out.println("Read student");
 
@@ -231,6 +299,33 @@ public class Console {
             problem.setId(id);
 
             return problem;
+        }catch (InputMismatchException ex){
+            System.out.println("Invalid data!");
+        }
+        return null;
+    }
+
+    private Assignment readAssignment(){
+        System.out.println("Read assignment");
+
+        Scanner in = new Scanner(System.in);
+        try{
+            System.out.println("ID: ");
+            Long id = in.nextLong();
+            in.nextLine();
+
+            System.out.println("Student ID: ");
+            Long studentID = in.nextLong();
+            in.nextLine();
+
+            System.out.println("Problem ID: ");
+            Long problemID = in.nextLong();
+            in.nextLine();
+
+            Assignment assignment = new Assignment(studentID, problemID);
+            assignment.setId(id);
+
+            return assignment;
         }catch (InputMismatchException ex){
             System.out.println("Invalid data!");
         }

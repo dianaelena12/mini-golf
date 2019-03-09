@@ -66,10 +66,10 @@ public class ProblemFileRepo extends InMemRepo<Long, Problem> {
 
     @Override
     public Optional<Problem> save(Problem entity) throws ValidatorException {
-        Optional<Problem> optional = super.save(entity);
         if(findOne(entity.getId()).isPresent()){
             throw new DuplicateException("There can't be two problems with the same id!");
         }
+        Optional<Problem> optional = super.save(entity);
         if (optional.isPresent()) {
             return optional;
         }

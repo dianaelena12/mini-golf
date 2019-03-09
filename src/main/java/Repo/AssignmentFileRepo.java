@@ -1,6 +1,6 @@
 package Repo;
 
-import Domain.Student;
+import Domain.Assignment;
 import Domain.Validators.DuplicateException;
 import Domain.Validators.NoEntityStored;
 import Domain.Validators.Validator;
@@ -17,11 +17,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public class StudentFileRepo extends InMemRepo<Long, Student> {
-
+public class AssignmentFileRepo extends InMemRepo<Long, Assignment> {
     private String fileName;
 
-    public StudentFileRepo(Validator<Student> validator, String fileName) {
+    public AssignmentFileRepo(Validator<Assignment> validator, String fileName) {
         super(validator);
         this.fileName = fileName;
         loadData();
@@ -34,15 +33,15 @@ public class StudentFileRepo extends InMemRepo<Long, Student> {
                 List<String> items = Arrays.asList(line.split(","));
 
                 Long id = Long.valueOf(items.get(0));
-                String serialNumber = items.get(1);
-                String name = items.get((2));
-                int group = Integer.parseInt(items.get(3));
+                Long studentID = Long.valueOf(items.get(1));
+                Long problemID = Long.valueOf(items.get(2));
+                int grade = Integer.parseInt(items.get(3));
 
-                Student student = new Student(serialNumber, name, group);
-                student.setId(id);
+                Assignment Assignment = new Assignment(studentID, problemID, grade);
+                Assignment.setId(id);
 
                 try {
-                    super.save(student);
+                    super.save(Assignment);
                 } catch (ValidatorException e) {
                     e.printStackTrace();
                 }
@@ -53,15 +52,15 @@ public class StudentFileRepo extends InMemRepo<Long, Student> {
     }
 
     private void updateData(){
-        super.findAll().forEach(student -> saveToFile(student));
+        super.findAll().forEach(Assignment -> saveToFile(Assignment));
     }
 
     @Override
-    public Optional<Student> save(Student entity) throws ValidatorException {
+    public Optional<Assignment> save(Assignment entity) throws ValidatorException {
         if(findOne(entity.getId()).isPresent()){
-            throw new DuplicateException("There can't be two students with the same id!");
+            throw new DuplicateException("There can't be two assignments with the same id!");
         }
-        Optional<Student> optional = super.save(entity);
+        Optional<Assignment> optional = super.save(entity);
         if (optional.isPresent()) {
             return optional;
         }
@@ -69,19 +68,19 @@ public class StudentFileRepo extends InMemRepo<Long, Student> {
         return Optional.empty();
     }
 
-    private void saveToFile(Student entity) {
+    private void saveToFile(Assignment entity) {
         Path path = Paths.get(fileName);
 
         try (BufferedWriter bufferedWriter = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
             bufferedWriter.write(
-                    entity.getId() + "," + entity.getSerialNumber() + "," + entity.getName() + "," + entity.getGroup());
+                    entity.getId() + "," + entity.getStudentID()+ "," + entity.getProblemID() + "," + entity.getGrade());
             bufferedWriter.newLine();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private Optional<Student> updateFile(Optional<Student> optional){
+    private Optional<Assignment> updateFile(Optional<Assignment> optional){
         if(optional.isPresent()) {
             try{
                 FileWriter fw = new FileWriter(fileName ,false);
@@ -96,19 +95,19 @@ public class StudentFileRepo extends InMemRepo<Long, Student> {
     }
 
     @Override
-    public Optional<Student> delete(Long id) {
-        Optional<Student> optional = super.delete(id);
+    public Optional<Assignment> delete(Long id) {
+        Optional<Assignment> optional = super.delete(id);
         if(findOne(id).isPresent()){
-            throw new NoEntityStored("Student does not exist in the database!");
+            throw new NoEntityStored("Assignment does not exist in the database!");
         }
         return updateFile(optional);
     }
 
     @Override
-    public Optional<Student> update(Student entity) throws ValidatorException {
-        Optional<Student> optional = super.update(entity);
+    public Optional<Assignment> update(Assignment entity) throws ValidatorException {
+        Optional<Assignment> optional = super.update(entity);
         if(!findOne(entity.getId()).isPresent()){
-            throw new NoEntityStored("Student does not exist in the database!");
+            throw new NoEntityStored("Assignment does not exist in the database!");
         }
         return updateFile(optional);
     }

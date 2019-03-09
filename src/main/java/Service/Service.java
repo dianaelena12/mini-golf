@@ -1,7 +1,9 @@
 package Service;
 
+import Domain.Assignment;
 import Domain.Problem;
 import Domain.Student;
+import Domain.Validators.InvalidAssignment;
 import Domain.Validators.ValidatorException;
 import Repo.RepositoryInterface;
 
@@ -12,10 +14,13 @@ import java.util.stream.StreamSupport;
 public class Service {
     private RepositoryInterface<Long, Student> studentRepo;
     private RepositoryInterface<Long, Problem> problemRepo;
+    private RepositoryInterface<Long, Assignment> assignmentRepo;
 
-    public Service(RepositoryInterface<Long, Student> studentRepo, RepositoryInterface<Long, Problem> problemRepo) {
+    public Service(RepositoryInterface<Long, Student> studentRepo, RepositoryInterface<Long, Problem> problemRepo,
+                   RepositoryInterface<Long, Assignment> assignmentRepo) {
         this.studentRepo = studentRepo;
         this.problemRepo = problemRepo;
+        this.assignmentRepo = assignmentRepo;
     }
 
     public void addStudent(Student student) throws ValidatorException{
@@ -50,5 +55,34 @@ public class Service {
 
     public void updateProblem(Problem problem){
         problemRepo.update(problem);
+    }
+
+    public void addAssignment(Assignment assignment){
+        if(studentRepo.findOne(assignment.getStudentID()).isPresent() &&
+                problemRepo.findOne(assignment.getProblemID()).isPresent()){
+            assignmentRepo.save(assignment);
+        } else {
+            throw new InvalidAssignment("The student or the problem is not in the database!");
+        }
+    }
+
+    public void assignGrade(Long studentID, Long problemID, int grade){
+        if(studentRepo.findOne(studentID).isPresent() && problemRepo.findOne(problemID).isPresent()){
+            getAllAssignments().forEach(assignment -> {
+                if(assignment.getStudentID() == studentID && assignment.getProblemID() == problemID) {
+                    assignment.getGrade();
+                    Assignment assignmentUpdate = new Assignment(studentID, problemID, grade);
+                    assignmentUpdate.setId(assignment.getId());
+                    assignmentRepo.update(assignmentUpdate);
+                }
+            });
+        } else {
+            throw new InvalidAssignment("The student or the problem is not in the database!");
+        }
+    }
+
+    public Set<Assignment> getAllAssignments(){
+        Iterable<Assignment> assignments = assignmentRepo.findAll();
+        return StreamSupport.stream(assignments.spliterator(), false).collect(Collectors.toSet());
     }
 }
