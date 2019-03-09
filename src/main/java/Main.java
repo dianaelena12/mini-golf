@@ -1,10 +1,12 @@
+import Domain.Problem;
 import Domain.Student;
+import Domain.Validators.ProblemValidator;
 import Domain.Validators.StudentValidator;
 import Domain.Validators.Validator;
-import Repo.InMemRepo;
+import Repo.ProblemFileRepo;
 import Repo.RepositoryInterface;
 import Repo.StudentFileRepo;
-import Service.StudentService;
+import Service.Service;
 import UI.Console;
 
 import java.io.File;
@@ -20,9 +22,12 @@ public class Main {
         }
 
         Validator<Student> studentValidator = new StudentValidator();
+        Validator<Problem> problemValidator = new ProblemValidator();
         RepositoryInterface<Long, Student> studRepo = new StudentFileRepo(studentValidator,
                 "C:\\Users\\Alex\\Desktop\\mini-golf\\src\\main\\java\\Data\\Students");
-        StudentService studService = new StudentService(studRepo);
+        RepositoryInterface<Long, Problem> problemRepo = new ProblemFileRepo(problemValidator,
+                "C:\\Users\\Alex\\Desktop\\mini-golf\\src\\main\\java\\Data\\Problems");
+        Service studService = new Service(studRepo, problemRepo);
         Console console = new Console(studService);
         console.runConsole();
     }

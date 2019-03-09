@@ -1,8 +1,7 @@
 package Repo;
 
 import Domain.BaseEntity;
-import Domain.Validators.DuplicateException;
-import Domain.Validators.NoStudentStored;
+import Domain.Validators.NoEntityStored;
 import Domain.Validators.Validator;
 import Domain.Validators.ValidatorException;
 
@@ -41,9 +40,6 @@ public class InMemRepo<ID, T extends BaseEntity<ID>> implements RepositoryInterf
         if (entity == null) {
             throw new IllegalArgumentException("ID must not be null!");
         }
-        if(findOne(entity.getId()).isPresent()){
-            throw new DuplicateException("There can't be two students with the same id!");
-        }
         validator.validate(entity);
         return Optional.ofNullable(entities.putIfAbsent(entity.getId(), entity));
     }
@@ -54,10 +50,7 @@ public class InMemRepo<ID, T extends BaseEntity<ID>> implements RepositoryInterf
             throw new IllegalArgumentException("ID must not be null!");
         }
         if(entities.isEmpty()){
-            throw new NoStudentStored("There are no students in the database!");
-        }
-        if(!findOne(id).isPresent()){
-            throw new NoStudentStored("Student does not exist in the database!");
+            throw new NoEntityStored("There are no entities in the database!");
         }
         return Optional.ofNullable(entities.remove(id));
     }
@@ -68,10 +61,7 @@ public class InMemRepo<ID, T extends BaseEntity<ID>> implements RepositoryInterf
             throw new IllegalArgumentException("ID must not be null!");
         }
         if(entities.isEmpty()){
-            throw new NoStudentStored("There are no students in the database!");
-        }
-        if(!findOne(entity.getId()).isPresent()){
-            throw new NoStudentStored("Student does not exist in the database!");
+            throw new NoEntityStored("There are no students in the database!");
         }
         validator.validate(entity);
         return Optional.ofNullable(entities.computeIfPresent(entity.getId(), (k, v) -> entity));

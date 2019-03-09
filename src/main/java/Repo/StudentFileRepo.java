@@ -1,6 +1,8 @@
 package Repo;
 
 import Domain.Student;
+import Domain.Validators.DuplicateException;
+import Domain.Validators.NoEntityStored;
 import Domain.Validators.Validator;
 import Domain.Validators.ValidatorException;
 
@@ -57,6 +59,9 @@ public class StudentFileRepo extends InMemRepo<Long, Student> {
     @Override
     public Optional<Student> save(Student entity) throws ValidatorException {
         Optional<Student> optional = super.save(entity);
+        if(findOne(entity.getId()).isPresent()){
+            throw new DuplicateException("There can't be two students with the same id!");
+        }
         if (optional.isPresent()) {
             return optional;
         }
@@ -91,14 +96,20 @@ public class StudentFileRepo extends InMemRepo<Long, Student> {
     }
 
     @Override
-    public Optional<Student> delete(Long aLong) {
-        Optional<Student> optional = super.delete(aLong);
+    public Optional<Student> delete(Long id) {
+        Optional<Student> optional = super.delete(id);
+        if(findOne(id).isPresent()){
+            throw new NoEntityStored("Student does not exist in the database!");
+        }
         return updateFile(optional);
     }
 
     @Override
     public Optional<Student> update(Student entity) throws ValidatorException {
         Optional<Student> optional = super.update(entity);
+        if(!findOne(entity.getId()).isPresent()){
+            throw new NoEntityStored("Student does not exist in the database!");
+        }
         return updateFile(optional);
     }
 }

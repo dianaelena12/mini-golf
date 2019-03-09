@@ -1,28 +1,27 @@
 package UI;
 
+import Domain.Problem;
 import Domain.Student;
 import Domain.Validators.DuplicateException;
-import Domain.Validators.NoStudentStored;
+import Domain.Validators.NoEntityStored;
 import Domain.Validators.ValidatorException;
-import Service.StudentService;
+import Service.Service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.Set;
 
 public class Console {
-    private StudentService studService;
+    private Service service;
 
-    public Console(StudentService studService) {
-        this.studService = studService;
+    public Console(Service service) {
+        this.service = service;
     }
 
     public void menuText(){
         System.out.println("0.Exit\n1.Add student\n2.Remove student\n" +
-                "3.Update student\n4.Print all students");
+                "3.Update student\n4.Print all students\n5.Add problem" +
+                "\n6.Remove problem\n7.Update problem\n8.Print all problems");
     }
 
     public void runConsole(){
@@ -31,7 +30,7 @@ public class Console {
             System.out.println("Choose:");
             Scanner in = new Scanner(System.in);
             int option = in.nextInt();
-            if(option < 0 || option > 4)
+            if(option < 0 || option > 8)
                 System.out.println("Invalid number!");
             switch (option){
                 case 1:{
@@ -50,6 +49,22 @@ public class Console {
                     printAllStudents();
                     break;
                 }
+                case 5:{
+                    addProblem();
+                    break;
+                }
+                case 6:{
+                    removeProblem();
+                    break;
+                }
+                case 7:{
+                    updateProblem();
+                    break;
+                }
+                case 8:{
+                    printAllProblems();
+                    break;
+                }
             }
             if(option == 0){
                 break;
@@ -58,7 +73,7 @@ public class Console {
     }
 
     private void printAllStudents(){
-        Set<Student> students = studService.getAllStudents();
+        Set<Student> students = service.getAllStudents();
         if(students.isEmpty()){
             System.out.println("There are no students!");
             return;
@@ -66,18 +81,43 @@ public class Console {
         students.stream().forEach(System.out::println);
     }
 
+    private void printAllProblems(){
+        Set<Problem> problems = service.getAllProblems();
+        if(problems.isEmpty()){
+            System.out.println("There are no problems!");
+            return;
+        }
+        problems.stream().forEach(System.out::println);
+    }
+
 
     private void addStudent(){
-            Student student = readStudent();
-            try {
-                studService.addStudent(student);
-                System.out.println("Student added successfully!");
-            } catch (ValidatorException ex) {
-                ex.printStackTrace();
-            } catch (DuplicateException ex){
-                System.out.println(ex.getMessage());
-            }
+        Student student = readStudent();
+        try {
+            service.addStudent(student);
+            System.out.println("Student added successfully!");
+        } catch (ValidatorException ex) {
+            ex.printStackTrace();
+        } catch (DuplicateException ex){
+            System.out.println(ex.getMessage());
+        } catch (IllegalArgumentException ex){
+            System.out.println(ex.getMessage());
         }
+    }
+
+    private void addProblem(){
+        Problem problem = readProblem();
+        try{
+            service.addProblem(problem);
+            System.out.println("Problem added successfully!");
+        }catch (ValidatorException ex){
+            ex.printStackTrace();
+        } catch (DuplicateException ex){
+            System.out.println(ex.getMessage());
+        } catch (IllegalArgumentException ex){
+            System.out.println(ex.getMessage());
+        }
+    }
 
     private void removeStudent(){
         System.out.println("ID: ");
@@ -87,23 +127,56 @@ public class Console {
             if(id < 0){
                 System.out.println("Invalid id!");
             }
-            studService.removeStudent(id);
+            service.removeStudent(id);
             System.out.println("Student removed successfully!");
         } catch (InputMismatchException ex) {
                 System.out.println("Invalid id!");
-        }catch (NoStudentStored ex){
+        }catch (NoEntityStored ex){
                 System.out.println(ex.getMessage());
+        }
+    }
+
+    private void removeProblem(){
+        System.out.println("ID: ");
+        Scanner in = new Scanner(System.in);
+        try{
+            Long id = in.nextLong();
+            if(id < 0){
+                System.out.println("Invalid id!");
+            }
+            service.removeProblem(id);
+            System.out.println("Problem removed successfully!");
+        } catch (InputMismatchException ex) {
+            System.out.println("Invalid id!");
+        } catch (NoEntityStored ex){
+            System.out.println(ex.getMessage());
         }
     }
 
     private void updateStudent(){
         Student student = readStudent();
         try {
-            studService.updateStudent(student);
+            service.updateStudent(student);
             System.out.println("Student updated successfully!");
         } catch (ValidatorException ex) {
             ex.printStackTrace();
-        } catch (NoStudentStored ex){
+        }catch (NoEntityStored ex){
+            System.out.println(ex.getMessage());
+        } catch (IllegalArgumentException ex){
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    private void updateProblem(){
+        Problem problem = readProblem();
+        try{
+            service.updateProblem(problem);
+            System.out.println("Problem updated successfully!");
+        }catch (ValidatorException ex){
+            ex.printStackTrace();
+        } catch (NoEntityStored ex){
+            System.out.println(ex.getMessage());
+        }catch (IllegalArgumentException ex){
             System.out.println(ex.getMessage());
         }
     }
@@ -131,6 +204,34 @@ public class Console {
 
             return student;
         }catch (java.util.InputMismatchException ex){
+            System.out.println("Invalid data!");
+        }
+        return null;
+    }
+
+    private Problem readProblem(){
+        System.out.println("Read problem");
+
+        Scanner in = new Scanner(System.in);
+        try{
+            System.out.println("ID: ");
+            Long id = in.nextLong();
+            in.nextLine();
+
+            System.out.println("Subject: ");
+            String subject = in.nextLine();
+
+            System.out.println("Difficulty: ");
+            String difficulty = in.nextLine();
+
+            System.out.println("Text: ");
+            String text = in.nextLine();
+
+            Problem problem = new Problem(subject, difficulty, text);
+            problem.setId(id);
+
+            return problem;
+        }catch (InputMismatchException ex){
             System.out.println("Invalid data!");
         }
         return null;
