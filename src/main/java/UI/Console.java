@@ -19,7 +19,7 @@ public class Console {
         this.service = service;
     }
 
-    public void menuText(){
+    private void menuText(){
         System.out.println("0.Exit\n1.Add student\n2.Remove student\n" +
                 "3.Update student\n4.Print all students\n5.Add problem" +
                 "\n6.Remove problem\n7.Update problem\n8.Print all problems" +
