@@ -23,7 +23,7 @@ public class Service {
         this.assignmentRepo = assignmentRepo;
     }
 
-    public void addStudent(Student student) throws ValidatorException{
+    public void addStudent(Student student) throws ValidatorException {
         studentRepo.save(student);
     }
 
@@ -32,44 +32,44 @@ public class Service {
         return StreamSupport.stream(students.spliterator(), false).collect(Collectors.toSet());
     }
 
-    public void removeStudent(Long id){
+    public void removeStudent(Long id) {
         studentRepo.delete(id);
     }
 
-    public void updateStudent(Student student){
+    public void updateStudent(Student student) {
         studentRepo.update(student);
     }
 
-    public void addProblem(Problem problem) throws ValidatorException{
+    public void addProblem(Problem problem) throws ValidatorException {
         problemRepo.save(problem);
     }
 
-    public Set<Problem> getAllProblems(){
+    public Set<Problem> getAllProblems() {
         Iterable<Problem> problems = problemRepo.findAll();
         return StreamSupport.stream(problems.spliterator(), false).collect(Collectors.toSet());
     }
 
-    public void removeProblem(Long id){
+    public void removeProblem(Long id) {
         problemRepo.delete(id);
     }
 
-    public void updateProblem(Problem problem){
+    public void updateProblem(Problem problem) {
         problemRepo.update(problem);
     }
 
-    public void addAssignment(Assignment assignment){
-        if(studentRepo.findOne(assignment.getStudentID()).isPresent() &&
-                problemRepo.findOne(assignment.getProblemID()).isPresent()){
+    public void addAssignment(Assignment assignment) {
+        if (studentRepo.findOne(assignment.getStudentID()).isPresent() &&
+                problemRepo.findOne(assignment.getProblemID()).isPresent()) {
             assignmentRepo.save(assignment);
         } else {
             throw new InvalidAssignment("The student or the problem is not in the database!");
         }
     }
 
-    public void assignGrade(Long studentID, Long problemID, int grade){
-        if(studentRepo.findOne(studentID).isPresent() && problemRepo.findOne(problemID).isPresent()){
+    public void assignGrade(Long studentID, Long problemID, int grade) {
+        if (studentRepo.findOne(studentID).isPresent() && problemRepo.findOne(problemID).isPresent()) {
             getAllAssignments().forEach(assignment -> {
-                if(assignment.getStudentID() == studentID && assignment.getProblemID() == problemID) {
+                if (assignment.getStudentID() == studentID && assignment.getProblemID() == problemID) {
                     assignment.getGrade();
                     Assignment assignmentUpdate = new Assignment(studentID, problemID, grade);
                     assignmentUpdate.setId(assignment.getId());
@@ -81,8 +81,23 @@ public class Service {
         }
     }
 
-    public Set<Assignment> getAllAssignments(){
+    public Set<Assignment> getAllAssignments() {
         Iterable<Assignment> assignments = assignmentRepo.findAll();
         return StreamSupport.stream(assignments.spliterator(), false).collect(Collectors.toSet());
+    }
+
+    public Set<Student> getAllStudentsByGroup(int group) {
+        Iterable<Student> students = studentRepo.findAll();
+        return StreamSupport.stream(students.spliterator(), false).filter(student -> student.getGroup() == group).collect(Collectors.toSet());
+    }
+
+    public Set<Problem> getAllProblemsByDifficulty(String difficulty) {
+        Iterable<Problem> problems = problemRepo.findAll();
+        return StreamSupport.stream(problems.spliterator(), false).filter(problem -> difficulty.equals(problem.getDifficulty())).collect(Collectors.toSet());
+    }
+
+    public Set<Assignment> getUngradedAssignments() {
+        Iterable<Assignment> assignments = assignmentRepo.findAll();
+        return StreamSupport.stream(assignments.spliterator(), false).filter(assignment -> assignment.getGrade() == 0).collect(Collectors.toSet());
     }
 }

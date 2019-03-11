@@ -65,5 +65,6 @@ public interface RepositoryInterface<ID, T extends BaseEntity<ID>> {
      */
     Optional<T> update(T entity) throws ValidatorException;
 
+
 }
 
