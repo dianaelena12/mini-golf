@@ -1,6 +1,5 @@
 package Repo.XMLRepos;
 
-import Domain.Assignment;
 import Domain.Student;
 import Domain.Validators.DuplicateException;
 import Domain.Validators.NoEntityStored;
@@ -15,14 +14,10 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.reflect.Executable;
 import java.util.Optional;
 
 public class StudentXMLRepo extends InMemRepo<Long, Student> {
@@ -96,13 +91,7 @@ public class StudentXMLRepo extends InMemRepo<Long, Student> {
         Document doc = db.parse("C:\\Users\\Diana\\Desktop\\mini-golf\\src\\main\\java\\Data\\Students.xml");
 
         NodeList list = doc.getElementsByTagName("student");
-        for(int i = 0; i < list.getLength(); i++) {
-            Element element = (Element)list.item(i);
-            Long nr = Long.valueOf(element.getAttribute("id")).longValue();
-            if(nr.longValue() == id){
-                element.getParentNode().removeChild(element);
-            }
-        }
+        AssignmentXMLRepo.removeChildFromNode(id, list);
 
         Element root = doc.getDocumentElement();
         Transformer transformer = TransformerFactory.newInstance().newTransformer();

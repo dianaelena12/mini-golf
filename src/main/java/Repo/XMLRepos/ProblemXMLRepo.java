@@ -72,13 +72,7 @@ public class ProblemXMLRepo extends InMemRepo<Long,Problem> {
         Document doc = db.parse("C:\\Users\\Diana\\Desktop\\mini-golf\\src\\main\\java\\Data\\Problems.xml");
 
         NodeList list = doc.getElementsByTagName("Problem");
-        for (int i = 0; i < list.getLength(); i++) {
-            Element element = (Element) list.item(i);
-            Long nr = Long.valueOf(element.getAttribute("id")).longValue();
-            if (nr.longValue() == id) {
-                element.getParentNode().removeChild(element);
-            }
-        }
+        AssignmentXMLRepo.removeChildFromNode(id, list);
 
         Element root = doc.getDocumentElement();
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
