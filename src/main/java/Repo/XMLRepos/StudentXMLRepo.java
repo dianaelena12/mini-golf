@@ -40,7 +40,7 @@ public class StudentXMLRepo extends InMemRepo<Long, Student> {
 
         DocumentBuilder db = dbf.newDocumentBuilder();
 
-        Document doc = db.parse("C:\\Users\\Alex\\Desktop\\mini-golf\\src\\main\\java\\Data\\Students.xml");
+        Document doc = db.parse("C:\\Users\\Diana\\Desktop\\mini-golf\\src\\main\\java\\Data\\Students.xml");
         Element root = doc.getDocumentElement();
 
         NodeList nodes = root.getChildNodes();
@@ -74,7 +74,7 @@ public class StudentXMLRepo extends InMemRepo<Long, Student> {
 
     private static void saveToXML(Student student) throws Exception {
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-                .parse("C:\\Users\\Alex\\Desktop\\mini-golf\\src\\main\\java\\Data\\Students.xml");
+                .parse("C:\\Users\\Diana\\Desktop\\mini-golf\\src\\main\\java\\Data\\Students.xml");
         Element root = doc.getDocumentElement();
         Element studentElement = doc.createElement("student");
 
@@ -87,13 +87,13 @@ public class StudentXMLRepo extends InMemRepo<Long, Student> {
 
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
         transformer.transform(new DOMSource(root), new StreamResult(new
-                FileOutputStream("C:\\Users\\Alex\\Desktop\\mini-golf\\src\\main\\java\\Data\\Students.xml")));
+                FileOutputStream("C:\\Users\\Diana\\Desktop\\mini-golf\\src\\main\\java\\Data\\Students.xml")));
 }
 
     private static void deleteFromXML(Long id) throws Exception {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
-        Document doc = db.parse("C:\\Users\\Alex\\Desktop\\mini-golf\\src\\main\\java\\Data\\Students.xml");
+        Document doc = db.parse("C:\\Users\\Diana\\Desktop\\mini-golf\\src\\main\\java\\Data\\Students.xml");
 
         NodeList list = doc.getElementsByTagName("student");
         for(int i = 0; i < list.getLength(); i++) {
@@ -107,13 +107,13 @@ public class StudentXMLRepo extends InMemRepo<Long, Student> {
         Element root = doc.getDocumentElement();
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
         transformer.transform(new DOMSource(root), new StreamResult(new
-                FileOutputStream("C:\\Users\\Alex\\Desktop\\mini-golf\\src\\main\\java\\Data\\Students.xml")));
+                FileOutputStream("C:\\Users\\Diana\\Desktop\\mini-golf\\src\\main\\java\\Data\\Students.xml")));
     }
 
     private static void updateXML(Student student) throws Exception {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
-        Document doc = db.parse("C:\\Users\\Alex\\Desktop\\mini-golf\\src\\main\\java\\Data\\Students.xml");
+        Document doc = db.parse("C:\\Users\\Diana\\Desktop\\mini-golf\\src\\main\\java\\Data\\Students.xml");
 
         NodeList list = doc.getElementsByTagName("student");
         for(int i = 0; i < list.getLength(); i++) {
@@ -136,7 +136,7 @@ public class StudentXMLRepo extends InMemRepo<Long, Student> {
         Element root = doc.getDocumentElement();
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
         transformer.transform(new DOMSource(root), new StreamResult(new
-                FileOutputStream("C:\\Users\\Alex\\Desktop\\mini-golf\\src\\main\\java\\Data\\Students.xml")));
+                FileOutputStream("C:\\Users\\Diana\\Desktop\\mini-golf\\src\\main\\java\\Data\\Students.xml")));
     }
 
     public Optional<Student> save(Student entity) throws ValidatorException{
@@ -164,7 +164,7 @@ public class StudentXMLRepo extends InMemRepo<Long, Student> {
         }
         Optional<Student> optional = super.delete(id);
         if(findOne(id).isPresent()){
-            throw new NoEntityStored("Assignment does not exist in the database!");
+            throw new NoEntityStored("Student does not exist in the database!");
         }
         return optional;
     }

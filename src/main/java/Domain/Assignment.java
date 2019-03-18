@@ -6,6 +6,8 @@ public class Assignment extends BaseEntity<Long> {
     private Long studentID, problemID;
     private int grade;
 
+    public Assignment(){}
+
     public Assignment(Long studentID, Long problemID) {
         this.studentID = studentID;
         this.problemID = problemID;

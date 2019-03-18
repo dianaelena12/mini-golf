@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Assignments>
+    <Assignment id="1">
+        <studentID>1</studentID>
+        <problemID>1</problemID>
+        <grade>0</grade>
+    </Assignment>
+    <Assignment id="2">
+        <studentID>2</studentID>
+        <problemID>1</problemID>
+        <grade>0</grade>
+    </Assignment>
+</Assignments>
