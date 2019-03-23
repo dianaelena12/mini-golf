@@ -72,6 +72,15 @@ public class AssignmentXMLRepo extends InMemRepo<Long, Assignment> {
         Document doc = db.parse("C:\\Users\\Diana\\Desktop\\mini-golf\\src\\main\\java\\Data\\Assignments.xml");
 
         NodeList list = doc.getElementsByTagName("Assignment");
+        removeChildFromNode(id, list);
+
+        Element root = doc.getDocumentElement();
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        transformer.transform(new DOMSource(root), new StreamResult(new
+                FileOutputStream("C:\\Users\\Diana\\Desktop\\mini-golf\\src\\main\\java\\Data\\Assignments.xml")));
+    }
+
+    static void removeChildFromNode(Long id, NodeList list) {
         for (int i = 0; i < list.getLength(); i++) {
             Element element = (Element) list.item(i);
             Long nr = Long.valueOf(element.getAttribute("id")).longValue();
@@ -79,11 +88,6 @@ public class AssignmentXMLRepo extends InMemRepo<Long, Assignment> {
                 element.getParentNode().removeChild(element);
             }
         }
-
-        Element root = doc.getDocumentElement();
-        Transformer transformer = TransformerFactory.newInstance().newTransformer();
-        transformer.transform(new DOMSource(root), new StreamResult(new
-                FileOutputStream("C:\\Users\\Diana\\Desktop\\mini-golf\\src\\main\\java\\Data\\Assignments.xml")));
     }
 
     private static void updateXML(Assignment Assignment) throws Exception {
