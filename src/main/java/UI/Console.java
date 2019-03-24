@@ -25,7 +25,8 @@ public class Console {
                 "\n6.Remove problem\n7.Update problem\n8.Print all problems" +
                 "\n9.Assign problem to student\n10.Assign grade\n11.Print all assignments" +
                 "\n12.Print all students from a given group\n13.Print all problems with a " +
-                "certain difficulty\n14.Print all ungraded assignments");
+                "certain difficulty\n14.Print all ungraded assignments\n15.Print students " +
+                "with pagination");
     }
 
     public void runConsole() {
@@ -35,7 +36,7 @@ public class Console {
             try {
                 Scanner in = new Scanner(System.in);
                 int option = in.nextInt();
-                if (option < 0 || option > 14)
+                if (option < 0 || option > 15)
                     System.out.println("Invalid number!");
                 switch (option) {
                     case 1: {
@@ -94,6 +95,10 @@ public class Console {
                         printAssignmentsFilter();
                         break;
                     }
+                    case 15: {
+                        printStudentsWithPaging();
+                        break;
+                    }
                 }
                 if (option == 0) {
                     break;
@@ -101,6 +106,34 @@ public class Console {
             } catch (InputMismatchException ex) {
                 System.out.println("Invalid option!");
             }
+        }
+    }
+
+    private void printStudentsWithPaging() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("enter page size: ");
+        int size = scanner.nextInt();
+        service.setPageSize(size);
+
+        System.out.println("enter 'n' - for next; 'x' - for exit: ");
+
+        while (true) {
+            String cmd = scanner.next();
+            if (cmd.equals("x")) {
+                System.out.println("exit");
+                break;
+            }
+            if (!cmd.equals("n")) {
+                System.out.println("this option is not yet implemented");
+                continue;
+            }
+
+            Set<Student> students = service.getNextStudents();
+            if (students.size() == 0) {
+                System.out.println("no more students");
+                break;
+            }
+            students.forEach(student -> System.out.println(student));
         }
     }
 

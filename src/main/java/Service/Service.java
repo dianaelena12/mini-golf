@@ -5,18 +5,26 @@ import Domain.Problem;
 import Domain.Student;
 import Domain.Validators.InvalidAssignment;
 import Domain.Validators.ValidatorException;
+import Repo.Paging.Impl.PageRequest;
+import Repo.Paging.Page;
+import Repo.Paging.Pageable;
+import Repo.Paging.PagingRepository;
 import Repo.RepositoryInterface;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class Service {
-    private RepositoryInterface<Long, Student> studentRepo;
+    private PagingRepository<Long, Student> studentRepo;
     private RepositoryInterface<Long, Problem> problemRepo;
     private RepositoryInterface<Long, Assignment> assignmentRepo;
 
-    public Service(RepositoryInterface<Long, Student> studentRepo, RepositoryInterface<Long, Problem> problemRepo,
+    private int page = 0;
+    private int size = 1;
+
+    public Service(PagingRepository<Long, Student> studentRepo, RepositoryInterface<Long, Problem> problemRepo,
                    RepositoryInterface<Long, Assignment> assignmentRepo) {
         this.studentRepo = studentRepo;
         this.problemRepo = problemRepo;
@@ -99,5 +107,25 @@ public class Service {
     public Set<Assignment> getUngradedAssignments() {
         Iterable<Assignment> assignments = assignmentRepo.findAll();
         return StreamSupport.stream(assignments.spliterator(), false).filter(assignment -> assignment.getGrade() == 0).collect(Collectors.toSet());
+    }
+
+    public void setPageSize(int size) {
+        this.size = size;
+        this.page = 0;
+    }
+
+    public Set<Student> getNextStudents() {
+        /* COPIAZA FUNCTIA ASTA SI PENTRU PROBLEMS SI ASSIGNMENTS
+            SI SCHIMBA REPOURILE IN PAGING REPOS
+         */
+        Pageable pageable = PageRequest.of(size, page);
+        try{
+            Page<Student> studentPage = studentRepo.findAll(pageable);
+            page = studentPage.nextPageable().getPageNumber();
+            return studentPage.getContent().collect(Collectors.toSet());
+        }catch (IndexOutOfBoundsException ex) {
+            page = 0;
+            return new HashSet<>();
+        }
     }
 }

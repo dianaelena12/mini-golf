@@ -8,6 +8,7 @@ import Domain.Validators.Validator;
 import Repo.DBRepos.StudentDBRepo;
 import Repo.FIleRepos.AssignmentFileRepo;
 import Repo.FIleRepos.ProblemFileRepo;
+import Repo.Paging.PagingRepository;
 import Repo.RepositoryInterface;
 import Repo.FIleRepos.StudentFileRepo;
 import Repo.XMLRepos.AssignmentXMLRepo;
@@ -31,7 +32,7 @@ public class Main {
         Validator<Student> studentValidator = new StudentValidator();
         Validator<Problem> problemValidator = new ProblemValidator();
         Validator<Assignment> assignmentValidator = new AssignmentValidator();
-        RepositoryInterface<Long, Student> studRepo = new StudentDBRepo(studentValidator);
+        PagingRepository<Long, Student> studRepo = new StudentDBRepo(studentValidator);
 //        RepositoryInterface<Long, Student> studRepo = new StudentXMLRepo(studentValidator);
   //      RepositoryInterface<Long,Problem> problemRepo = new ProblemXMLRepo(problemValidator);
         //RepositoryInterface<Long,Assignment> assignmentRepo = new AssignmentXMLRepo(assignmentValidator);

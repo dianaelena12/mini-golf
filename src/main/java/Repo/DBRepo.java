@@ -3,15 +3,24 @@ package Repo;
 import Domain.BaseEntity;
 import Domain.Validators.Validator;
 import Domain.Validators.ValidatorException;
+import Repo.Paging.Impl.PageImpl;
+import Repo.Paging.Page;
+import Repo.Paging.PagingRepository;
+
+import Repo.Paging.Pageable;
 
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
-public abstract class DBRepo<ID extends Serializable, T extends BaseEntity<ID>> implements RepositoryInterface<ID, T> {
+public abstract class DBRepo<ID extends Serializable, T extends BaseEntity<ID>> implements PagingRepository<ID, T> {
     private Validator<T> validator;
     private static final String URL = "jdbc:postgresql://localhost:5432/MPPLab";
     private static final String USERNAME = "postgres";
@@ -21,7 +30,8 @@ public abstract class DBRepo<ID extends Serializable, T extends BaseEntity<ID>> 
         this.validator = validator;
     }
 
-    public DBRepo() {}
+    public DBRepo() {
+    }
 
     public abstract Optional<T> saveInDB(T entity);
 
@@ -36,9 +46,9 @@ public abstract class DBRepo<ID extends Serializable, T extends BaseEntity<ID>> 
 
     public Connection connectToDB() {
         Connection connection = null;
-        try{
+        try {
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-        }catch (SQLException ex){
+        } catch (SQLException ex) {
             ex.printStackTrace();
         }
         return connection;
@@ -46,18 +56,18 @@ public abstract class DBRepo<ID extends Serializable, T extends BaseEntity<ID>> 
     }
 
     @Override
-    public Optional findOne(ID id) {
+    public Optional<T> findOne(ID id) {
         return this.getFromDB(id);
     }
 
     @Override
-    public Optional save(T entity) throws ValidatorException {
+    public Optional<T> save(T entity) throws ValidatorException {
         validator.validate(entity);
         return this.saveInDB(entity);
     }
 
     @Override
-    public Optional delete(ID id) {
+    public Optional<T> delete(ID id) {
         return this.deleteFromDB(id);
     }
 
@@ -70,5 +80,15 @@ public abstract class DBRepo<ID extends Serializable, T extends BaseEntity<ID>> 
     public Optional update(T entity) throws ValidatorException {
         validator.validate(entity);
         return this.updateInDB(entity);
+    }
+
+    @Override
+    public Page<T> findAll(Pageable pageable) {
+        Set<T> entities = findAllFromDB();
+        AtomicInteger counter = new AtomicInteger(0);
+        List<T> list = (new ArrayList<>(entities.stream()
+                .collect(Collectors.groupingBy(it -> counter.getAndIncrement() / pageable.getPageSize())).values()))
+                .get(pageable.getPageNumber());
+        return new PageImpl<>(pageable, list.stream());
     }
 }
