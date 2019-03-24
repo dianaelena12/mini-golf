@@ -3,12 +3,12 @@ package Domain;
 import java.util.Objects;
 
 public class Problem extends BaseEntity<Long> {
-
     private String subject;
     private String difficulty;
     private String text;
 
-    public Problem(){}
+    public Problem() {
+    }
 
     public Problem(String subject, String difficulty, String text) {
         this.subject = subject;
