@@ -1,8 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Problems>
-    <Problem id="1">
-        <subject>AI</subject>
-        <difficulty>Hard</difficulty>
-        <text>Solve a 9X9 Sudoku</text>
-    </Problem>
-</Problems>
+<?xml version="1.0" encoding="UTF-8"?><Problems>
+    
+<Problem id="1"><subject>AI</subject><difficulty>Hard</difficulty><text>Sudoku problem</text></Problem></Problems>

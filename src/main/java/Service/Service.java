@@ -9,7 +9,6 @@ import Repo.Paging.Impl.PageRequest;
 import Repo.Paging.Page;
 import Repo.Paging.Pageable;
 import Repo.Paging.PagingRepository;
-import Repo.RepositoryInterface;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -18,14 +17,14 @@ import java.util.stream.StreamSupport;
 
 public class Service {
     private PagingRepository<Long, Student> studentRepo;
-    private RepositoryInterface<Long, Problem> problemRepo;
-    private RepositoryInterface<Long, Assignment> assignmentRepo;
+    private PagingRepository<Long, Problem> problemRepo;
+    private PagingRepository<Long, Assignment> assignmentRepo;
 
     private int page = 0;
     private int size = 1;
 
-    public Service(PagingRepository<Long, Student> studentRepo, RepositoryInterface<Long, Problem> problemRepo,
-                   RepositoryInterface<Long, Assignment> assignmentRepo) {
+    public Service(PagingRepository<Long, Student> studentRepo, PagingRepository<Long, Problem> problemRepo,
+                   PagingRepository<Long, Assignment> assignmentRepo) {
         this.studentRepo = studentRepo;
         this.problemRepo = problemRepo;
         this.assignmentRepo = assignmentRepo;
@@ -115,17 +114,39 @@ public class Service {
     }
 
     public Set<Student> getNextStudents() {
-        /* COPIAZA FUNCTIA ASTA SI PENTRU PROBLEMS SI ASSIGNMENTS
-            SI SCHIMBA REPOURILE IN PAGING REPOS
-         */
         Pageable pageable = PageRequest.of(size, page);
-        try{
+        try {
             Page<Student> studentPage = studentRepo.findAll(pageable);
             page = studentPage.nextPageable().getPageNumber();
             return studentPage.getContent().collect(Collectors.toSet());
-        }catch (IndexOutOfBoundsException ex) {
+        } catch (IndexOutOfBoundsException ex) {
             page = 0;
             return new HashSet<>();
         }
     }
+
+    public Set<Problem> getNextProblems() {
+        Pageable pageable = PageRequest.of(size, page);
+        try {
+            Page<Problem> problemPage = problemRepo.findAll(pageable);
+            page = problemPage.nextPageable().getPageNumber();
+            return problemPage.getContent().collect(Collectors.toSet());
+        } catch (IndexOutOfBoundsException ex) {
+            page = 0;
+            return new HashSet<>();
+        }
+    }
+
+    public Set<Assignment> getNextAssignments() {
+        Pageable pageable = PageRequest.of(size, page);
+        try {
+            Page<Assignment> assignmentPage = assignmentRepo.findAll(pageable);
+            page = assignmentPage.nextPageable().getPageNumber();
+            return assignmentPage.getContent().collect(Collectors.toSet());
+        } catch (IndexOutOfBoundsException ex) {
+            page = 0;
+            return new HashSet<>();
+        }
+    }
+
 }

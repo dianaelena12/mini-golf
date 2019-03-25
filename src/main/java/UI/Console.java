@@ -26,7 +26,7 @@ public class Console {
                 "\n9.Assign problem to student\n10.Assign grade\n11.Print all assignments" +
                 "\n12.Print all students from a given group\n13.Print all problems with a " +
                 "certain difficulty\n14.Print all ungraded assignments\n15.Print students " +
-                "with pagination");
+                "with pagination" + "\n16.Print problems with pagination" + "\n17.Print assignments with pagination");
     }
 
     public void runConsole() {
@@ -36,7 +36,7 @@ public class Console {
             try {
                 Scanner in = new Scanner(System.in);
                 int option = in.nextInt();
-                if (option < 0 || option > 15)
+                if (option < 0 || option > 17)
                     System.out.println("Invalid number!");
                 switch (option) {
                     case 1: {
@@ -99,6 +99,14 @@ public class Console {
                         printStudentsWithPaging();
                         break;
                     }
+                    case 16: {
+                        printProblemsWithPaging();
+                        break;
+                    }
+                    case 17: {
+                        printAssignmentsWithPaging();
+                        break;
+                    }
                 }
                 if (option == 0) {
                     break;
@@ -134,6 +142,62 @@ public class Console {
                 break;
             }
             students.forEach(student -> System.out.println(student));
+        }
+    }
+
+    private void printProblemsWithPaging() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("enter page size: ");
+        int size = scanner.nextInt();
+        service.setPageSize(size);
+
+        System.out.println("enter 'n' - for next; 'x' - for exit: ");
+
+        while (true) {
+            String cmd = scanner.next();
+            if (cmd.equals("x")) {
+                System.out.println("exit");
+                break;
+            }
+            if (!cmd.equals("n")) {
+                System.out.println("this option is not yet implemented");
+                continue;
+            }
+
+            Set<Problem> problems = service.getNextProblems();
+            if (problems.size() == 0) {
+                System.out.println("no more problems");
+                break;
+            }
+            problems.forEach(problem -> System.out.println(problem));
+        }
+    }
+
+    private void printAssignmentsWithPaging() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("enter page size: ");
+        int size = scanner.nextInt();
+        service.setPageSize(size);
+
+        System.out.println("enter 'n' - for next; 'x' - for exit: ");
+
+        while (true) {
+            String cmd = scanner.next();
+            if (cmd.equals("x")) {
+                System.out.println("exit");
+                break;
+            }
+            if (!cmd.equals("n")) {
+                System.out.println("this option is not yet implemented");
+                continue;
+            }
+
+            Set<Assignment> assignments = service.getNextAssignments();
+            if (assignments.size() == 0) {
+                System.out.println("no more assignments");
+                break;
+            }
+            assignments.forEach(assignment -> System.out.println(assignment));
         }
     }
 
