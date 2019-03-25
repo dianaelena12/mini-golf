@@ -24,7 +24,7 @@ public abstract class DBRepo<ID extends Serializable, T extends BaseEntity<ID>> 
     private Validator<T> validator;
     private static final String URL = "jdbc:postgresql://localhost:5432/MPPLab";
     private static final String USERNAME = "postgres";
-    private static final String PASSWORD = "alex";
+    private static final String PASSWORD = "12345";
 
     public DBRepo(Validator<T> validator) {
         this.validator = validator;
