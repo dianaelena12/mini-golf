@@ -1,2 +1,5 @@
 rootProject.name = 'mini-golf'
+include 'Common'
+include 'Server'
+include 'Client'
 
