@@ -83,13 +83,13 @@ public class ServerApp {
 
         tcpServer.addHandler(
                 ServiceInterface.UPDATE_STUDENT, (request) -> {
-                    try{
+                    try {
                         String[] list = request.getBody().split(",");
                         Student student = new Student(list[1], list[2], Integer.parseInt(list[3]));
                         student.setId(Long.valueOf(list[0]).longValue());
                         service.updateStudent(student);
                         return getMessage(Message.OK, "Student updated!");
-                    }catch (TCPServerException ex) {
+                    } catch (TCPServerException ex) {
                         ex.printStackTrace();
                         return getMessage(Message.ERROR, ex.getMessage());
                     }
@@ -115,7 +115,7 @@ public class ServerApp {
                 ServiceInterface.ADD_PROBLEM, (request) -> {
                     try {
                         String[] list = request.getBody().split(",");
-                        Problem problem = new Problem(list[0], list[1], list[2]);
+                        Problem problem = new Problem(list[1], list[2], list[3]);
                         problem.setId(Long.valueOf(list[0]).longValue());
                         service.addProblem(problem);
                         return getMessage(Message.OK, "Problem added!");
@@ -136,16 +136,85 @@ public class ServerApp {
                     }
                 }
         );
+        tcpServer.addHandler(
+                ServiceInterface.UPDATE_PROBLEM, (request) -> {
+                    try {
+                        String[] list = request.getBody().split(",");
+                        Problem problem = new Problem(list[1], list[2], list[3]);
+                        problem.setId(Long.valueOf(list[0]).longValue());
+                        service.updateProblem(problem);
+                        return getMessage(Message.OK, "Problem updated!");
+                    } catch (TCPServerException ex) {
+                        ex.printStackTrace();
+                        return getMessage(Message.ERROR, ex.getMessage());
+                    }
+                }
+        );
 
         tcpServer.addHandler(
                 ServiceInterface.GET_BY_GROUP, (request) -> {
-                    try{
-                    Future<Set<Student>> result = service.getAllStudentsByGroup(Integer.parseInt(request.getBody()));
-                    String body = result.get().stream().map(s -> "" + s.getId() + "," + s.getSerialNumber() + ","
-                                                        + s.getName() + "," + s.getGroup()).collect(Collectors.
-                                                        joining(";"));
-                    return getMessage(Message.OK, body);
-                } catch (InterruptedException | ExecutionException | TCPServerException ex) {
+                    try {
+                        Future<Set<Student>> result = service.getAllStudentsByGroup(Integer.parseInt(request.getBody()));
+                        String body = result.get().stream().map(s -> "" + s.getId() + "," + s.getSerialNumber() + ","
+                                + s.getName() + "," + s.getGroup()).collect(Collectors.
+                                joining(";"));
+                        return getMessage(Message.OK, body);
+                    } catch (InterruptedException | ExecutionException | TCPServerException ex) {
+                        ex.printStackTrace();
+                        return getMessage(Message.ERROR, ex.getMessage());
+                    }
+                }
+        );
+        tcpServer.addHandler(
+                ServiceInterface.GET_BY_DIFFICULTY, (request) -> {
+                    try {
+                        Future<Set<Problem>> result = service.getAllProblemsByDifficulty(request.getBody());
+                        String body = result.get().stream().map(s -> "" + s.getId() + "," + s.getDifficulty() + ","
+                                + s.getSubject() + "," + s.getText()).collect(Collectors.
+                                joining(";"));
+                        return getMessage(Message.OK, body);
+                    } catch (InterruptedException | ExecutionException | TCPServerException ex) {
+                        ex.printStackTrace();
+                        return getMessage(Message.ERROR, ex.getMessage());
+                    }
+                }
+        );
+        tcpServer.addHandler(
+                ServiceInterface.ADD_ASSIGNMENT, (request) -> {
+                    try {
+                        String[] list = request.getBody().split(",");
+                        Assignment assignment = new Assignment(Long.parseLong(list[1]), Long.parseLong(list[2]), Integer.parseInt(list[3]));
+                        assignment.setId(Long.valueOf(list[0]).longValue());
+                        service.addAssignment(assignment);
+                        return getMessage(Message.OK, "Assignment added!");
+                    } catch (TCPServerException | DuplicateException ex) {
+                        return getMessage(Message.ERROR, ex.getMessage());
+                    }
+                }
+        );
+        tcpServer.addHandler(
+                ServiceInterface.GET_UNGRADED, (request) -> {
+                    try {
+                        Future<Set<Assignment>> result = service.getUngradedAssignments();
+                        String body = result.get().stream().map(s -> "" + s.getId() + "," + s.getStudentID() + ","
+                                + s.getProblemID() + "," + s.getGrade()).collect(Collectors.
+                                joining(";"));
+                        return getMessage(Message.OK, body);
+                    } catch (InterruptedException | ExecutionException | TCPServerException ex) {
+                        ex.printStackTrace();
+                        return getMessage(Message.ERROR, ex.getMessage());
+                    }
+                }
+        );
+        tcpServer.addHandler(
+                ServiceInterface.GET_ALL_ASSIGNMENTS, (request) -> {
+                    try {
+                        Future<Set<Assignment>> result = service.getAllAssignments();
+                        String body = result.get().stream().map(s -> "" + s.getId() + "," + s.getStudentID() + ","
+                                + s.getProblemID() + "," + s.getGrade()).collect(Collectors.
+                                joining(";"));
+                        return getMessage(Message.OK, body);
+                    } catch (InterruptedException | ExecutionException | TCPServerException ex) {
                         ex.printStackTrace();
                         return getMessage(Message.ERROR, ex.getMessage());
                     }
@@ -154,13 +223,42 @@ public class ServerApp {
 
         tcpServer.addHandler(
                 ServiceInterface.GET_NEXT_STUDENTS, (request) -> {
-                    try{
+                    try {
                         Future<Set<Student>> result = service.getNextStudents();
                         String body = result.get().stream().map(s -> "" + s.getId() + "," + s.getSerialNumber() + ","
                                 + s.getName() + "," + s.getGroup()).collect(Collectors.joining(";"));
                         System.out.println(body);
                         return getMessage(Message.OK, body);
-                    }catch (InterruptedException | ExecutionException | TCPServerException ex) {
+                    } catch (InterruptedException | ExecutionException | TCPServerException ex) {
+                        ex.printStackTrace();
+                        return getMessage(Message.ERROR, ex.getMessage());
+                    }
+                }
+        );
+        tcpServer.addHandler(
+                ServiceInterface.GET_NEXT_PROBLEMS, (request) -> {
+                    try {
+                        Future<Set<Problem>> result = service.getNextProblems();
+                        String body = result.get().stream().map(s -> "" + s.getId() + "," + s.getDifficulty() + ","
+                                + s.getSubject() + "," + s.getText()).collect(Collectors.joining(";"));
+                        System.out.println(body);
+                        return getMessage(Message.OK, body);
+                    } catch (InterruptedException | ExecutionException | TCPServerException ex) {
+                        ex.printStackTrace();
+                        return getMessage(Message.ERROR, ex.getMessage());
+                    }
+                }
+        );
+
+        tcpServer.addHandler(
+                ServiceInterface.GET_NEXT_ASSIGNMENTS, (request) -> {
+                    try {
+                        Future<Set<Assignment>> result = service.getNextAssignments();
+                        String body = result.get().stream().map(s -> "" + s.getId() + "," + s.getStudentID() + ","
+                                + s.getProblemID() + "," + s.getGrade()).collect(Collectors.joining(";"));
+                        System.out.println(body);
+                        return getMessage(Message.OK, body);
+                    } catch (InterruptedException | ExecutionException | TCPServerException ex) {
                         ex.printStackTrace();
                         return getMessage(Message.ERROR, ex.getMessage());
                     }
@@ -169,10 +267,10 @@ public class ServerApp {
 
         tcpServer.addHandler(
                 ServiceInterface.SET_SIZE, (request) -> {
-                    try{
+                    try {
                         service.setPageSize(Integer.parseInt(request.getBody()));
                         return getMessage(Message.OK, "");
-                    }catch (TCPServerException ex) {
+                    } catch (TCPServerException ex) {
                         ex.printStackTrace();
                         return getMessage(Message.ERROR, ex.getMessage());
                     }

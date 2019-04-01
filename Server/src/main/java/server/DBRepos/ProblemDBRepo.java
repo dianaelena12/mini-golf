@@ -22,7 +22,7 @@ public class ProblemDBRepo extends DBRepo<Long, Problem> {
 
     @Override
     public Optional<Problem> saveInDB(Problem entity) {
-        String sql = "insert into \"Problems\"(subject, difficulty, text, id) values(?,?,?,?)";
+        String sql = "insert into \"Problems\"( \"Subject\", \"Difficulty\", \"Text\", id) values(?,?,?,?)";
         try (Connection connect = this.connectToDB();
              PreparedStatement statement = connect.prepareStatement(sql)) {
 
@@ -59,7 +59,7 @@ public class ProblemDBRepo extends DBRepo<Long, Problem> {
 
     @Override
     public Optional<Problem> updateInDB(Problem entity) {
-        String sql = "update \"Problems\" set subject=?, difficulty=?, text=? where id=?";
+        String sql = "update \"Problems\" set \"subject\"=?, difficulty=?, text=? where id=?";
         try (Connection connect = this.connectToDB();
              PreparedStatement statement = connect.prepareStatement(sql)) {
 

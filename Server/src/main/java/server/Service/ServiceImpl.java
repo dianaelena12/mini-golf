@@ -50,7 +50,7 @@ public class ServiceImpl implements ServiceInterface {
 
     @Override
     public Future<Set<Student>> getAllStudents() {
-        return executorService.submit(() ->{
+        return executorService.submit(() -> {
             Iterable<Student> students = studRepo.findAll();
             return StreamSupport.stream(students.spliterator(), false)
                     .collect(Collectors.toSet());
@@ -59,7 +59,7 @@ public class ServiceImpl implements ServiceInterface {
 
     @Override
     public void removeStudent(Long id) {
-        executorService.submit(() ->{
+        executorService.submit(() -> {
             Optional<Student> optStud = studRepo.delete(id);
             optStud.orElseThrow(() -> new NoEntityStored("Student does not exist in database!"));
         });
@@ -67,7 +67,7 @@ public class ServiceImpl implements ServiceInterface {
 
     @Override
     public void updateStudent(Student student) {
-        executorService.submit(() ->{
+        executorService.submit(() -> {
             Optional<Student> optStud = studRepo.update(student);
             optStud.orElseThrow(() -> new NoEntityStored("Student does not exist in database!"));
         });
@@ -85,7 +85,7 @@ public class ServiceImpl implements ServiceInterface {
 
     @Override
     public Future<Set<Problem>> getAllProblems() {
-        return executorService.submit(() ->{
+        return executorService.submit(() -> {
             Iterable<Problem> problems = problemRepo.findAll();
             return StreamSupport.stream(problems.spliterator(), false)
                     .collect(Collectors.toSet());
@@ -94,7 +94,7 @@ public class ServiceImpl implements ServiceInterface {
 
     @Override
     public void removeProblem(Long id) {
-        executorService.submit(() ->{
+        executorService.submit(() -> {
             Optional<Problem> optProb = problemRepo.delete(id);
             optProb.orElseThrow(() -> new NoEntityStored("Problem does not exist in database!"));
         });
@@ -102,22 +102,33 @@ public class ServiceImpl implements ServiceInterface {
 
     @Override
     public void updateProblem(Problem problem) {
-
+        executorService.submit(() -> {
+            Optional<Problem> optProb = problemRepo.update(problem);
+            optProb.orElseThrow(() -> new NoEntityStored("Problem does not exist in database!"));
+        });
     }
 
     @Override
     public void addAssignment(Assignment assignment) {
-
+        executorService.submit(() -> {
+            Optional<Assignment> optAssign = assigRepo.save(assignment);
+            optAssign.ifPresent(s -> {
+                throw new DuplicateException("Assignment already exists in database!");
+            });
+        });
     }
 
     @Override
     public void assignGrade(Long studentID, Long problemID, int grade) {
-
     }
 
     @Override
     public Future<Set<Assignment>> getAllAssignments() {
-        return null;
+        return executorService.submit(() -> {
+            Iterable<Assignment> assignments = assigRepo.findAll();
+            return StreamSupport.stream(assignments.spliterator(), false)
+                    .collect(Collectors.toSet());
+        });
     }
 
     @Override
@@ -133,12 +144,24 @@ public class ServiceImpl implements ServiceInterface {
 
     @Override
     public Future<Set<Problem>> getAllProblemsByDifficulty(String difficulty) {
-        return null;
+        return executorService.submit(() -> {
+            Iterable<Problem> problems = problemRepo.findAll();
+            Set<Problem> filterProblems = new HashSet<>();
+            problems.forEach(filterProblems::add);
+            filterProblems.removeIf(p -> !difficulty.equals(p.getDifficulty()));
+            return filterProblems;
+        });
     }
 
     @Override
     public Future<Set<Assignment>> getUngradedAssignments() {
-        return null;
+        return executorService.submit(() -> {
+            Iterable<Assignment> assignments = assigRepo.findAll();
+            Set<Assignment> filterAssignments = new HashSet<>();
+            assignments.forEach(filterAssignments::add);
+            filterAssignments.removeIf(a -> a.getGrade() != 0);
+            return filterAssignments;
+        });
     }
 
     @Override
@@ -152,12 +175,12 @@ public class ServiceImpl implements ServiceInterface {
     @Override
     public Future<Set<Student>> getNextStudents() {
         return executorService.submit(() -> {
-            Pageable  pageable = PageRequest.of(page, size);
-            try{
+            Pageable pageable = PageRequest.of(size, page);
+            try {
                 Page<Student> studentPage = studRepo.findAll(pageable);
                 page = studentPage.nextPageable().getPageNumber();
                 return studentPage.getContent().collect(Collectors.toSet());
-            }catch (IndexOutOfBoundsException ex) {
+            } catch (IndexOutOfBoundsException ex) {
                 page = 0;
                 return new HashSet<>();
             }
@@ -166,11 +189,31 @@ public class ServiceImpl implements ServiceInterface {
 
     @Override
     public Future<Set<Problem>> getNextProblems() {
-        return null;
+        return executorService.submit(() -> {
+            Pageable pageable = PageRequest.of(size,page);
+            try {
+                Page<Problem> problemPage = problemRepo.findAll(pageable);
+                page = problemPage.nextPageable().getPageNumber();
+                return problemPage.getContent().collect(Collectors.toSet());
+            } catch (IndexOutOfBoundsException ex) {
+                page = 0;
+                return new HashSet<>();
+            }
+        });
     }
 
     @Override
     public Future<Set<Assignment>> getNextAssignments() {
-        return null;
+        return executorService.submit(() -> {
+            Pageable pageable = PageRequest.of(size,page);
+            try {
+                Page<Assignment> assignmentPage = assigRepo.findAll(pageable);
+                page = assignmentPage.nextPageable().getPageNumber();
+                return assignmentPage.getContent().collect(Collectors.toSet());
+            } catch (IndexOutOfBoundsException ex) {
+                page = 0;
+                return new HashSet<>();
+            }
+        });
     }
 }
