@@ -1,0 +1,1 @@
+typeSearchIndex = [{"p":"Domain","l":"BaseEntity"},{"p":"UI","l":"Console"},{"p":"Repo","l":"InMemRepo"},{"p":"<Unnamed>","l":"Main"},{"p":"Repo","l":"RepositoryInterface"},{"p":"Domain","l":"Student"},{"p":"Service","l":"StudentService"},{"p":"Domain.Validators","l":"StudentValidator"},{"p":"Domain.Validators","l":"Validator"},{"p":"Domain.Validators","l":"ValidatorException"}]
