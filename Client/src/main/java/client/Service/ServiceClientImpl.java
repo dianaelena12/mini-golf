@@ -28,6 +28,7 @@ public class ServiceClientImpl implements ServiceInterface {
 
     @Override
     public void addStudent(Student student) {
+        //added a student
         executorService.submit(() -> {
             Message request = Message.builder()
                     .header(ServiceInterface.ADD_STUDENT)
