@@ -1,7 +1,7 @@
 package server.Paging;
 
 import common.Domain.BaseEntity;
-import server.RepositoryInterface;
+import server.Repository.RepositoryInterface;
 
 import java.io.Serializable;
 
@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 public interface PagingRepository<ID extends Serializable,
         T extends BaseEntity<ID>>
-        extends RepositoryInterface<ID, T> {
+        extends RepositoryInterface<T> {
 
     Page<T> findAll(Pageable pageable);
 

@@ -15,7 +15,7 @@ public interface ServiceInterface{
     void addStudent(Student student);
 
     String GET_ALL_STUDENTS = "GET_ALL_STUDENTS";
-    Future<Set<Student>> getAllStudents();
+    Set<Student> getAllStudents();
 
     String REMOVE_STUDENT = "REMOVE_STUDENT";
     void removeStudent(Long id);
@@ -27,7 +27,7 @@ public interface ServiceInterface{
     void addProblem(Problem problem);
 
     String GET_ALL_PROBLEMS = "GET_ALL_PROBLEMS";
-    Future<Set<Problem>> getAllProblems();
+    Set<Problem> getAllProblems();
 
     String REMOVE_PROBLEM = "REMOVE_PROBLEM";
     void removeProblem(Long id);
@@ -42,26 +42,26 @@ public interface ServiceInterface{
     void assignGrade(Long studentID, Long problemID, int grade);
 
     String GET_ALL_ASSIGNMENTS = "GET_ALL_ASSIGNMENTS";
-    Future<Set<Assignment>> getAllAssignments();
+    Set<Assignment> getAllAssignments();
 
     String GET_BY_GROUP = "GET_BY_GROUP";
-    Future<Set<Student>> getAllStudentsByGroup(int group);
+    Set<Student> getAllStudentsByGroup(int group);
 
     String GET_BY_DIFFICULTY = "GET_BY_DIFFICULTY";
-    Future<Set<Problem>> getAllProblemsByDifficulty(String difficulty);
+    Set<Problem> getAllProblemsByDifficulty(String difficulty);
 
     String GET_UNGRADED = "GET_UNGRADED";
-    Future<Set<Assignment>> getUngradedAssignments();
+    Set<Assignment> getUngradedAssignments();
 
     String SET_SIZE = "SET_SIZE";
     void setPageSize(int size);
 
     String GET_NEXT_STUDENTS = "GET_NEXT_STUDENTS";
-    Future<Set<Student>> getNextStudents();
+    Set<Student> getNextStudents();
 
     String GET_NEXT_PROBLEMS = "GET_NEXT_PROBLEMS";
-    Future<Set<Problem>> getNextProblems();
+    Set<Problem> getNextProblems();
 
     String GET_NEXT_ASSIGNMENTS = "GET_NEXT_ASSIGNMENTS";
-    Future<Set<Assignment>> getNextAssignments();
+    Set<Assignment> getNextAssignments();
 }
