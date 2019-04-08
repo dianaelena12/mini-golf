@@ -18,92 +18,92 @@ public class ClientServiceClient implements ServiceInterface {
     public ClientServiceClient() {
     }
 
-    @Autowired
+    @Override
     public void addStudent(Student student) {
         clientService.addStudent(student);
     }
 
-    @Autowired
+    @Override
     public Set<Student> getAllStudents() {
         return clientService.getAllStudents();
     }
 
-    @Autowired
+    @Override
     public void removeStudent(Long id) {
         clientService.removeStudent(id);
     }
 
-    @Autowired
+    @Override
     public void updateStudent(Student student) {
         clientService.updateStudent(student);
     }
 
-    @Autowired
+    @Override
     public void addProblem(Problem problem) {
 
     }
 
-    @Autowired
+    @Override
     public Set<Problem> getAllProblems() {
         return null;
     }
 
-    @Autowired
+    @Override
     public void removeProblem(Long id) {
 
     }
 
-    @Autowired
+    @Override
     public void updateProblem(Problem problem) {
 
     }
 
-    @Autowired
+    @Override
     public void addAssignment(Assignment assignment) {
 
     }
 
-    @Autowired
+    @Override
     public void assignGrade(Long studentID, Long problemID, int grade) {
 
     }
 
-    @Autowired
+    @Override
     public Set<Assignment> getAllAssignments() {
         return null;
     }
 
-    @Autowired
+    @Override
     public Set<Student> getAllStudentsByGroup(int group) {
         return clientService.getAllStudentsByGroup(group);
     }
 
-    @Autowired
+    @Override
     public Set<Problem> getAllProblemsByDifficulty(String difficulty) {
         return null;
     }
 
-    @Autowired
+    @Override
     public Set<Assignment> getUngradedAssignments() {
         return null;
     }
 
-    @Autowired
+    @Override
     public void setPageSize(int size) {
         clientService.setPageSize(size);
     }
 
-    @Autowired
+    @Override
     public Set<Student> getNextStudents() {
         return clientService.getNextStudents();
     }
 
-    @Autowired
+    @Override
     public Set<Problem> getNextProblems() {
         return null;
     }
 
-    @Autowired
+    @Override
     public Set<Assignment> getNextAssignments() {
         return null;
     }

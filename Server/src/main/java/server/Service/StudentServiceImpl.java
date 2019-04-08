@@ -5,6 +5,7 @@ import common.Domain.Problem;
 import common.Domain.Student;
 import common.ServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import server.Paging.Impl.PageRequest;
 import server.Paging.Page;
 import server.Paging.Pageable;
@@ -16,6 +17,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+@Component
 public class StudentServiceImpl implements ServiceInterface {
     @Autowired
     private ExecutorService executorService;
@@ -112,12 +114,12 @@ public class StudentServiceImpl implements ServiceInterface {
 
     @Override
     public Set<Student> getNextStudents() {
-        Pageable pageable = PageRequest.of(page,size);
-        try{
+        Pageable pageable = PageRequest.of(page, size);
+        try {
             Page<Student> studentPage = studentRepository.findAll(pageable);
             page = ((Page) studentPage).nextPageable().getPageNumber();
             return studentPage.getContent().collect(Collectors.toSet());
-        }catch (IndexOutOfBoundsException e){
+        } catch (IndexOutOfBoundsException e) {
             page = 0;
             return new HashSet<>();
         }

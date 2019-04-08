@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutorService;
 
 public class ClientApp {
     public static void main(String[] args) {
+
         AnnotationConfigApplicationContext context =
                 new AnnotationConfigApplicationContext("Config");
         ClientConsole clientConsole = context.getBean(ClientConsole.class);
