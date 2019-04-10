@@ -13,8 +13,7 @@ public class ClientAppConfig {
         RmiProxyFactoryBean rmiProxyFactoryBean = new RmiProxyFactoryBean();
         rmiProxyFactoryBean.setServiceInterface(ServiceInterface.class);
         rmiProxyFactoryBean.setServiceUrl("rmi://localhost:1099/ServiceInterface");
-        //aici nu stiu sigur daca asta e URL-ul corect
-
+        System.out.println(rmiProxyFactoryBean);
         return rmiProxyFactoryBean;
     }
 

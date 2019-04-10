@@ -9,7 +9,7 @@ public class ClientApp {
     public static void main(String[] args) {
 
         AnnotationConfigApplicationContext context =
-                new AnnotationConfigApplicationContext("Config");
+                new AnnotationConfigApplicationContext("client/Config");
         ClientConsole clientConsole = context.getBean(ClientConsole.class);
         clientConsole.runConsole();
         System.out.println("client - bye");

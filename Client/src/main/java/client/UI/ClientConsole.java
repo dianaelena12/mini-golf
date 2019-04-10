@@ -1,5 +1,6 @@
 package client.UI;
 
+import client.Service.ClientServiceClient;
 import common.Domain.Assignment;
 import common.Domain.Problem;
 import common.Domain.Student;
@@ -27,7 +28,7 @@ public class ClientConsole {
     private ExecutorService executorService;
 
     @Autowired
-    public ClientConsole(ServiceInterface service, ExecutorService executorService) {
+    public ClientConsole(ClientServiceClient service, ExecutorService executorService) {
         this.service = service;
         this.executorService = executorService;
     }
@@ -219,7 +220,6 @@ public class ClientConsole {
     }
 
     private void printStudents() {
-
         executorService.submit(() -> {
             Set<Student> students = service.getAllStudents();
             students.forEach(System.out::println);

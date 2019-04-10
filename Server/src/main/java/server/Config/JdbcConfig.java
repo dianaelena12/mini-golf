@@ -29,7 +29,7 @@ public class JdbcConfig {
         //TODO use env props (or property files)
         basicDataSource.setUrl("jdbc:postgresql://localhost:5432/MPPLab");
         basicDataSource.setUsername("postgres");
-        basicDataSource.setPassword("12345");
+        basicDataSource.setPassword("alex");
         basicDataSource.setInitialSize(2);
 
         return basicDataSource;

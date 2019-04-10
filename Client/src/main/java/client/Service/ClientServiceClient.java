@@ -13,29 +13,30 @@ import java.util.concurrent.Future;
 @Component
 public class ClientServiceClient implements ServiceInterface {
     @Autowired
-    private ServiceInterface clientService;
+    private ServiceInterface studentService;
 
     public ClientServiceClient() {
     }
 
     @Override
     public void addStudent(Student student) {
-        clientService.addStudent(student);
+        studentService.addStudent(student);
     }
 
     @Override
     public Set<Student> getAllStudents() {
-        return clientService.getAllStudents();
+        Set<Student> students = studentService.getAllStudents();
+        return students;
     }
 
     @Override
     public void removeStudent(Long id) {
-        clientService.removeStudent(id);
+        studentService.removeStudent(id);
     }
 
     @Override
     public void updateStudent(Student student) {
-        clientService.updateStudent(student);
+        studentService.updateStudent(student);
     }
 
     @Override
@@ -75,7 +76,7 @@ public class ClientServiceClient implements ServiceInterface {
 
     @Override
     public Set<Student> getAllStudentsByGroup(int group) {
-        return clientService.getAllStudentsByGroup(group);
+        return studentService.getAllStudentsByGroup(group);
     }
 
     @Override
@@ -90,12 +91,12 @@ public class ClientServiceClient implements ServiceInterface {
 
     @Override
     public void setPageSize(int size) {
-        clientService.setPageSize(size);
+        studentService.setPageSize(size);
     }
 
     @Override
     public Set<Student> getNextStudents() {
-        return clientService.getNextStudents();
+        return studentService.getNextStudents();
     }
 
     @Override

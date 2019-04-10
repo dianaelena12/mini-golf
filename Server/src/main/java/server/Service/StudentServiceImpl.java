@@ -114,7 +114,7 @@ public class StudentServiceImpl implements ServiceInterface {
 
     @Override
     public Set<Student> getNextStudents() {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(size, page);
         try {
             Page<Student> studentPage = studentRepository.findAll(pageable);
             page = ((Page) studentPage).nextPageable().getPageNumber();

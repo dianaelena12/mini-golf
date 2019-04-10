@@ -9,7 +9,7 @@ import java.util.concurrent.Future;
 
 public interface ServiceInterface{
     String SERVER_HOST = "localhost";
-    int SERVER_PORT = 1234;
+    int SERVER_PORT = 1099;
 
     String ADD_STUDENT = "ADD_STUDENT";
     void addStudent(Student student);

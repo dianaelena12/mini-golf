@@ -23,7 +23,7 @@ public class StudentRepositoryImpl implements RepositoryInterface<Student> {
     private Validator<Student> studentValidator;
 
     @Override
-    public Optional<Student> findOne(long id) {
+    public Optional<Student> findOne(Long id) {
         return Optional.empty();
     }
 
@@ -33,9 +33,9 @@ public class StudentRepositoryImpl implements RepositoryInterface<Student> {
         return jdbcOperations.query(sql, (rs, rowNum) -> {
             Long id = rs.getLong("id");
             String name = rs.getString("Name");
-            String serialNumber = rs.getString("Name");
+            String serialNumber = rs.getString("SerialNumber");
             int group = rs.getInt("Group");
-            Student student = new Student(name, serialNumber, group);
+            Student student = new Student(serialNumber, name, group);
             student.setId(id);
             return student;
         });
@@ -43,14 +43,14 @@ public class StudentRepositoryImpl implements RepositoryInterface<Student> {
 
     @Override
     public void save(Student entity) throws ValidatorException {
-        String sql = "INSERT INTO Students VALUES(?,?,?,?)";
+        String sql = "INSERT INTO \"Students\" VALUES(?,?,?,?)";
         studentValidator.validate(entity);
-        jdbcOperations.update(sql, entity.getId(), entity.getName(), entity.getSerialNumber(), entity.getGroup());
+        jdbcOperations.update(sql, entity.getGroup(), entity.getName(), entity.getSerialNumber(),  entity.getId());
 
     }
 
     @Override
-    public void delete(long id) {
+    public void delete(Long id) {
         String sql = "delete from \"Students\" where id=?";
         jdbcOperations.update(sql, id);
     }

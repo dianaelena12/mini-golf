@@ -20,7 +20,7 @@ public interface RepositoryInterface<T> {
      * @throws IllegalArgumentException if the given id is null.
      */
 
-    Optional<T> findOne(long id);
+    Optional<T> findOne(Long id);
 
 
     /**
@@ -46,7 +46,7 @@ public interface RepositoryInterface<T> {
      * @return an {@code Optional} - null if there is no entity with the given id, otherwise the removed entity.
      * @throws IllegalArgumentException if the given id is null.
      */
-    void delete(long id);
+    void delete(Long id);
 
     /**
      * Updates the given entity.
