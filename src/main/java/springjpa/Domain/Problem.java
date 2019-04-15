@@ -1,7 +1,9 @@
 package springjpa.Domain;
 
+import javax.persistence.Entity;
 import java.util.Objects;
 
+@Entity
 public class Problem extends BaseEntity<Long> {
     private String subject;
     private String difficulty;

@@ -1,14 +1,17 @@
 package springjpa.UI;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import springjpa.Domain.Assignment;
 import springjpa.Domain.Problem;
 import springjpa.Domain.Student;
+import springjpa.Service.ProblemService;
 import springjpa.Service.StudentService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Component
 public class Console {
@@ -16,7 +19,11 @@ public class Console {
     @Autowired
     private StudentService studentService;
 
-    public Console() {}
+    @Autowired
+    private ProblemService problemService;
+
+    public Console() {
+    }
 
     private void menuText() {
         System.out.println("0.Exit\n1.Add student\n2.Remove student\n" +
@@ -54,22 +61,22 @@ public class Console {
                         printAllStudents();
                         break;
                     }
-//                    case 5: {
-//                        addProblem();
-//                        break;
-//                    }
-//                    case 6: {
-//                        removeProblem();
-//                        break;
-//                    }
-//                    case 7: {
-//                        updateProblem();
-//                        break;
-//                    }
-//                    case 8: {
-//                        printAllProblems();
-//                        break;
-//                    }
+                    case 5: {
+                        addProblem();
+                        break;
+                    }
+                    case 6: {
+                        removeProblem();
+                        break;
+                    }
+                    case 7: {
+                        updateProblem();
+                        break;
+                    }
+                    case 8: {
+                        printAllProblems();
+                        break;
+                    }
 //                    case 9: {
 //                        addAssignment();
 //                        break;
@@ -86,10 +93,10 @@ public class Console {
                         printStudentFilter();
                         break;
                     }
-//                    case 13: {
-//                        printProblemsFilter();
-//                        break;
-//                    }
+                    case 13: {
+                        printProblemsFilter();
+                        break;
+                    }
 //                    case 14: {
 //                        printAssignmentsFilter();
 //                        break;
@@ -204,35 +211,40 @@ public class Console {
         studentService.getAllStudents().forEach(System.out::println);
     }
 
-//    private void printAllProblems() {
-//        Set<Problem> problems = service.getAllProblems();
-//        if (problems.isEmpty()) {
-//            System.out.println("There are no problems!");
-//            return;
-//        }
-//        problems.stream().forEach(System.out::println);
-//    }
+    private void printAllProblems() {
+        problemService.getAllProblems().forEach(System.out::println);
+    }
 
     private void printStudentFilter() {
+        try {
+            Scanner in = new Scanner(System.in);
+            System.out.println("Group: ");
+            int group = in.nextInt();
+            Iterable<Student> students = studentService.getAllStudents();
+            StreamSupport
+                    .stream(students.spliterator(), false)
+                    .filter(student -> student.getGr() == group)
+                    .collect(Collectors.toSet())
+                    .forEach(System.out::println);
+        } catch (java.util.InputMismatchException ex) {
+            System.out.println("Invalid data");
+        }
+
 
     }
 
-//    private void printProblemsFilter() {
-//        try {
-//            Scanner in = new Scanner(System.in);
-//            System.out.println("Difficulty: ");
-//            String difficulty = in.nextLine();
-//            Set<Problem> problems = service.getAllProblemsByDifficulty(difficulty);
-//            if (problems.isEmpty()) {
-//                System.out.println("There are no problems with the given difficulty");
-//                return;
-//            }
-//            problems.stream().forEach(System.out::println);
-//        } catch (InputMismatchException ex) {
-//            System.out.println("Invalid input!");
-//        }
-//    }
-//
+    private void printProblemsFilter() {
+        Scanner in = new Scanner(System.in);
+        System.out.println("Difficulty: ");
+        String difficulty = in.nextLine();
+        Iterable<Problem> problems = problemService.getAllProblems();
+        StreamSupport
+                .stream(problems.spliterator(), false)
+                .filter(problem -> difficulty.equals(problem.getDifficulty()))
+                .collect(Collectors.toSet())
+                .forEach(System.out::println);
+    }
+
 //    private void printAssignmentsFilter() {
 //        Set<Assignment> assignments = service.getUngradedAssignments();
 //        if (assignments.isEmpty()) {
@@ -256,20 +268,11 @@ public class Console {
         studentService.saveStudent(student);
     }
 
-//    private void addProblem() {
-//        Problem problem = readProblem();
-//        try {
-//            service.addProblem(problem);
-//            System.out.println("Problem added successfully!");
-//        } catch (ValidatorException ex) {
-//            ex.printStackTrace();
-//        } catch (DuplicateException ex) {
-//            System.out.println(ex.getMessage());
-//        } catch (IllegalArgumentException ex) {
-//            System.out.println(ex.getMessage());
-//        }
-//    }
-//
+    private void addProblem() {
+        Problem problem = readProblem();
+        problemService.saveProblem(problem);
+    }
+
 //    private void addAssignment() {
 //        Assignment assignment = readAssignment();
 //        try {
@@ -285,46 +288,27 @@ public class Console {
 //    }
 
     private void removeStudent() {
-       Scanner in = new Scanner(System.in);
-       Long id = in.nextLong();
-       studentService.deleteStudent(id);
+        Scanner in = new Scanner(System.in);
+        Long id = in.nextLong();
+        studentService.deleteStudent(id);
     }
 
-//    private void removeProblem() {
-//        System.out.println("ID: ");
-//        Scanner in = new Scanner(System.in);
-//        try {
-//            Long id = in.nextLong();
-//            if (id < 0) {
-//                System.out.println("Invalid id!");
-//            }
-//            service.removeProblem(id);
-//            System.out.println("Problem removed successfully!");
-//        } catch (InputMismatchException ex) {
-//            System.out.println("Invalid id!");
-//        } catch (NoEntityStored ex) {
-//            System.out.println(ex.getMessage());
-//        }
-//    }
+    private void removeProblem() {
+        System.out.println("ID: ");
+        Scanner in = new Scanner(System.in);
+        Long id = in.nextLong();
+        problemService.deleteProblem(id);
+    }
 
     private void updateStudent() {
         Student student = readStudent();
         studentService.updateStudent(student);
     }
 
-//    private void updateProblem() {
-//        Problem problem = readProblem();
-//        try {
-//            service.updateProblem(problem);
-//            System.out.println("Problem updated successfully!");
-//        } catch (ValidatorException ex) {
-//            ex.printStackTrace();
-//        } catch (NoEntityStored ex) {
-//            System.out.println(ex.getMessage());
-//        } catch (IllegalArgumentException ex) {
-//            System.out.println(ex.getMessage());
-//        }
-//    }
+    private void updateProblem() {
+        Problem problem = readProblem();
+        problemService.updateProblem(problem);
+    }
 //
 //    private void assignGrade() {
 //        Scanner in = new Scanner(System.in);
